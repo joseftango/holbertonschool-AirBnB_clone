@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 '''file_storage module'''
 from json import dump, load
+from models import base_model
 import os
 
 
@@ -15,7 +16,7 @@ class FileStorage:
 
     def new(self, obj):
         '''sets in __objects the obj with key <obj class name>.id'''
-        self.__objects[f'{type(obj).__name__}.{obj.id}'] = str(obj)
+        self.__objects[f'{type(obj).__name__}.{obj.id}'] = obj.to_dict()
 
     def save(self):
         '''serializes __objects to the JSON file'''
@@ -27,5 +28,8 @@ class FileStorage:
         (only if the JSON file (__file_path) exists'''
         if os.path.exists(self.__file_path):
             with open(self.__file_path, 'r', encoding='UTF-8') as f:
-                json_obj = load(f)
-                self.__objects = json_obj
+                json_dict = load(f)
+            for k, v in json_dict.items():
+                my_model = base_model.BaseModel(**v)
+                self.__objects[k] = str(my_model)
+
