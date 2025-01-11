@@ -6,10 +6,19 @@ from datetime import datetime
 
 class BaseModel:
     '''BaseModel class'''
-    def __init__(self):
-        self.id = str(uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+    def __init__(self, *args, **kwargs):
+        if kwargs:
+            for k, v in kwargs.items():
+                if k == '__class__':
+                    continue
+                elif k == 'created_at' or k == 'updated_at':
+                    setattr(self, k, datetime.fromisoformat(v))
+                else:
+                    setattr(self, k, v)
+        else:
+            self.id = str(uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
 
     def __str__(self):
         '''returns a string representation of the object'''
@@ -31,5 +40,3 @@ class BaseModel:
                 my_dict[k] = v
 
         return my_dict
-
-
