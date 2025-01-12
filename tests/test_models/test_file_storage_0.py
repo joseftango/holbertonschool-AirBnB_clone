@@ -17,16 +17,6 @@ class Test_FileStorage(unittest.TestCase):
         if exists("file.json"):
             remove("file.json")
 
-    # def test_File_Storage_all_attributes(self):
-
-    #     with self.assertRaises(AttributeError) as context:
-    #         path = storage.__file_path
-    #     self.assertEqual(str(context.exception), "'FileStorage' object has no attribute '_Test_BaseModel__file_path'")
-
-    #     with self.assertRaises(AttributeError) as context:
-    #         objs = storage.__objects
-    #     self.assertEqual(str(context.exception), "'FileStorage' object has no attribute '_Test_BaseModel__objects'")
-
     def test_empty_storage(self):
         all_objs = storage.all()
         self.assertEqual(all_objs, {})
