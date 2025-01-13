@@ -57,9 +57,11 @@ class HBNBCommand(Cmd):
         arguments = args.split()
         if len(arguments) == 0:
             print('** class name missing **')
-        elif len(arguments) == 1 and arguments[0] not in self.classes:
+        elif len(arguments) > 0 and arguments[0] not in self.classes:
             print("** class doesn't exist **")
-        elif len(arguments) == 2:
+        elif len(arguments) == 1:
+            print('** instance id missing **')
+        else:
             my_objs = storage.all()
             obj = None
             for v in my_objs.values():
@@ -70,8 +72,6 @@ class HBNBCommand(Cmd):
                 storage.save()
             else:
                 print('** no instance found **')
-        else:
-            pass
 
     def do_all(self, args):
         '''Prints all string representation of all
