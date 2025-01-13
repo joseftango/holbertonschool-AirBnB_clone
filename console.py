@@ -34,22 +34,24 @@ class HBNBCommand(Cmd):
         '''Prints the string representation of an
         instance based on the class name and id'''
         arguments = args.split()
+        my_objs = storage.all()
+
         if len(arguments) == 0:
             print('** class name missing **')
         elif len(arguments) == 1 and arguments[0] not in self.classes:
             print("** class doesn't exist **")
-        elif len(arguments) == 2:
-            my_objs = storage.all()
-            obj = None
-            for v in my_objs.values():
-                if arguments[1] == v.id:
-                    obj = v
-            if obj:
+        elif len(arguments) == 1 and arguments[0] in self.classes:
+            for obj in my_objs.values():
                 print(obj)
+        else:
+            my_obj = None
+            for obj in my_objs.values():
+                if arguments[1] == obj.id:
+                    my_obj = obj
+            if my_obj:
+                print(my_obj)
             else:
                 print('** no instance found **')
-        else:
-            pass
 
     def do_destroy(self, args):
         '''Deletes an instance based on the class name
@@ -83,18 +85,17 @@ class HBNBCommand(Cmd):
             for obj in my_objs.values():
                 print(obj)
 
-        elif len(arguments) == 1 and arguments[0] in self.classes:
-            class_based_objs = []
+        elif len(arguments) == 1 and arguments[0] not in self.classes:
+            print("** class doesn't exist **")
 
+        else:
+            class_based_objs = []
             for obj in my_objs.values():
                 if type(obj).__name__ == arguments[0]:
                     class_based_objs.append(obj)
 
             for obj in class_based_objs:
                 print(obj)
-
-        else:
-            pass
 
     def do_update(self, args):
         '''Updates an instance based on the class name
