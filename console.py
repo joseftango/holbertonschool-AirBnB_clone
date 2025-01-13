@@ -38,11 +38,10 @@ class HBNBCommand(Cmd):
 
         if len(arguments) == 0:
             print('** class name missing **')
-        elif len(arguments) == 1 and arguments[0] not in self.classes:
+        elif len(arguments) > 0 and arguments[0] not in self.classes:
             print("** class doesn't exist **")
-        elif len(arguments) == 1 and arguments[0] in self.classes:
-            for obj in my_objs.values():
-                print(obj)
+        elif len(arguments) == 1:
+            print("** instance id missing **")
         else:
             my_obj = None
             for obj in my_objs.values():
