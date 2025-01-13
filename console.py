@@ -1,14 +1,15 @@
 #!/usr/bin/python3
 '''console module'''
 from cmd import Cmd
-from models.base_model import BaseModel
 from models import storage
+from models.base_model import BaseModel
+from models.user import User
 
 
 class HBNBCommand(Cmd):
     '''HBNBCommand class'''
     prompt = '(hbnb) '
-    classes = ['BaseModel']
+    classes = ['BaseModel', 'User']
 
     def do_quit(self, arg):
         '''Quit command to exit the program'''
@@ -26,9 +27,9 @@ class HBNBCommand(Cmd):
         elif args not in self.classes:
             print("** class doesn't exist **")
         else:
-            my_model = BaseModel()
-            my_model.save()
-            print(my_model.id)
+            my_obj = eval(args)()
+            my_obj.save()
+            print(my_obj.id)
 
     def do_show(self, args):
         '''Prints the string representation of an
@@ -45,7 +46,8 @@ class HBNBCommand(Cmd):
         else:
             my_obj = None
             for obj in my_objs.values():
-                if arguments[1] == obj.id:
+                if type(obj).__name__ == arguments[0]\
+                        and arguments[1] == obj.id:
                     my_obj = obj
             if my_obj:
                 print(my_obj)
@@ -56,6 +58,7 @@ class HBNBCommand(Cmd):
         '''Deletes an instance based on the class name
         and id (save change into the JSON file)'''
         arguments = args.split()
+
         if len(arguments) == 0:
             print('** class name missing **')
         elif len(arguments) > 0 and arguments[0] not in self.classes:
@@ -64,12 +67,15 @@ class HBNBCommand(Cmd):
             print('** instance id missing **')
         else:
             my_objs = storage.all()
-            obj = None
-            for v in my_objs.values():
-                if arguments[1] == v.id:
-                    obj = v
-            if obj:
-                del my_objs[f'{type(obj).__name__}.{obj.id}']
+            my_obj = None
+
+            for obj in my_objs.values():
+                if type(obj).__name__ == arguments[0]\
+                        and arguments[1] == obj.id:
+                    my_obj = obj
+
+            if my_obj:
+                del my_objs[f'{type(my_obj).__name__}.{my_obj.id}']
                 storage.save()
             else:
                 print('** no instance found **')
