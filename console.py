@@ -153,7 +153,13 @@ class HBNBCommand(Cmd):
             if sliced_argument[0] in self.classes and\
                     sliced_argument[1] == 'all()':
                 self.collect(sliced_argument[0])
-        return None
+
+            elif sliced_argument[0] in self.classes and\
+                    sliced_argument[1] == 'count()':
+                res = self.count(sliced_argument[0])
+                print(res)
+            else:
+                pass
 
     def collect(self, cls):
         '''collect all objects with specific class'''
@@ -165,6 +171,17 @@ class HBNBCommand(Cmd):
 
         for obj in class_based_objs:
             print(obj)
+
+    def count(self, cls):
+        '''counts the objects based to class name'''
+        my_objs = storage.all()
+        class_based_objs = []
+
+        for obj in my_objs.values():
+            if type(obj).__name__ == cls:
+                class_based_objs.append(obj)
+
+        return len(class_based_objs)
 
     def emptyline(self):
         '''empty line + ENTER shouldn't execute anything'''
