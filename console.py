@@ -191,6 +191,32 @@ class HBNBCommand(Cmd):
                         storage.save()
                     else:
                         print("** no instance found **")
+            elif 'update' in sliced_argument[1]:
+                sub_args = sliced_argument[1][7:-1]\
+                    .replace('"', '').split(', ')
+                my_objs = storage.all()
+
+                if len(sub_args) == 1 and sub_args[0] == '':
+                    print("** instance id missing **")
+                elif len(sub_args) == 1 and not\
+                        my_objs.get(f'{sliced_argument[0]}.{sub_args[0]}'):
+                    print('** no instance found **')
+                elif len(sub_args) == 1 and\
+                        my_objs.get(f'{sliced_argument[0]}.{sub_args[0]}'):
+                    print('** attribute name missing **')
+                elif len(sub_args) == 2 and\
+                        my_objs.get(f'{sliced_argument[0]}.{sub_args[0]}'):
+                    print('** value missing **')
+                else:
+                    value = sub_args[2]
+                    try:
+                        value = eval(value)
+                    except Exception:
+                        pass
+                    my_objs = storage.all()
+                    my_obj = my_objs.get(f'{sliced_argument[0]}.{sub_args[0]}')
+                    setattr(my_obj, sub_args[1], value)
+                    storage.save()
             else:
                 pass
 
