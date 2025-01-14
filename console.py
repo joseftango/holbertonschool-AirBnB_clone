@@ -147,17 +147,37 @@ class HBNBCommand(Cmd):
     def default(self, arg):
         '''retrieve all instances of a class by using: <class name>.all()'''
         sliced_argument = arg.split('.')
-        if len(sliced_argument) != 2:
+
+        if len(sliced_argument) == 1 \
+                and sliced_argument[0] not in self.classes:
+            print("** class doesn't exist **")
+
+        elif len(sliced_argument) == 1 and sliced_argument[0] in self.classes:
             return None
+
         else:
-            if sliced_argument[0] in self.classes and\
-                    sliced_argument[1] == 'all()':
+            if sliced_argument[1] == 'all()':
                 self.collect(sliced_argument[0])
 
-            elif sliced_argument[0] in self.classes and\
-                    sliced_argument[1] == 'count()':
+            elif sliced_argument[1] == 'count()':
                 res = self.count(sliced_argument[0])
                 print(res)
+
+            elif 'show' in sliced_argument[1]:
+                id = sliced_argument[1][5:-1].strip('"')
+                if id == '' or id is None:
+                    print("** instance id missing **")
+                else:
+                    my_objs = storage.all()
+                    my_obj = None
+                    for obj in my_objs.values():
+                        if type(obj).__name__ == sliced_argument[0]\
+                                            and id == obj.id:
+                            my_obj = obj
+                    if my_obj:
+                        print(my_obj)
+                    else:
+                        print('** no instance found **')
             else:
                 pass
 
@@ -183,8 +203,12 @@ class HBNBCommand(Cmd):
 
         return len(class_based_objs)
 
+    def show(self, cls):
+        '''retrieve an instance based on its ID'''
+
     def emptyline(self):
         '''empty line + ENTER shouldn't execute anything'''
+        print('** class name missing **')
         pass
 
 
