@@ -178,6 +178,19 @@ class HBNBCommand(Cmd):
                         print(my_obj)
                     else:
                         print('** no instance found **')
+            elif 'destroy' in sliced_argument[1]:
+                id = sliced_argument[1][8:-1].strip('"')
+                if id == '' or id is None:
+                    print("** instance id missing **")
+                else:
+                    my_objs = storage.all()
+                    my_key = f'{sliced_argument[0]}.{id}'
+                    my_obj = my_objs.get(my_key)
+                    if my_obj:
+                        del my_objs[my_key]
+                        storage.save()
+                    else:
+                        print("** no instance found **")
             else:
                 pass
 
