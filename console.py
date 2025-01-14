@@ -198,12 +198,12 @@ class HBNBCommand(Cmd):
 
                 if len(sub_args) == 1 and sub_args[0] == '':
                     print("** instance id missing **")
-                elif len(sub_args) == 1 and not\
-                        my_objs.get(f'{sliced_argument[0]}.{sub_args[0]}'):
-                    print('** no instance found **')
                 elif len(sub_args) == 1 and\
                         my_objs.get(f'{sliced_argument[0]}.{sub_args[0]}'):
                     print('** attribute name missing **')
+                elif len(sub_args) >= 1 and not\
+                        my_objs.get(f'{sliced_argument[0]}.{sub_args[0]}'):
+                    print('** no instance found **')
                 elif len(sub_args) == 2 and\
                         my_objs.get(f'{sliced_argument[0]}.{sub_args[0]}'):
                     print('** value missing **')
@@ -215,8 +215,11 @@ class HBNBCommand(Cmd):
                         pass
                     my_objs = storage.all()
                     my_obj = my_objs.get(f'{sliced_argument[0]}.{sub_args[0]}')
-                    setattr(my_obj, sub_args[1], value)
-                    storage.save()
+                    if my_obj:
+                        setattr(my_obj, sub_args[1], value)
+                        storage.save()
+                    else:
+                        print('** no instance found **')
             else:
                 pass
 
