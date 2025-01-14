@@ -144,6 +144,28 @@ class HBNBCommand(Cmd):
             else:
                 print("** no instance found **")
 
+    def default(self, arg):
+        '''retrieve all instances of a class by using: <class name>.all()'''
+        sliced_argument = arg.split('.')
+        if len(sliced_argument) != 2:
+            return None
+        else:
+            if sliced_argument[0] in self.classes and\
+                    sliced_argument[1] == 'all()':
+                self.collect(sliced_argument[0])
+        return None
+
+    def collect(self, cls):
+        '''collect all objects with specific class'''
+        my_objs = storage.all()
+        class_based_objs = []
+        for obj in my_objs.values():
+            if type(obj).__name__ == cls:
+                class_based_objs.append(obj)
+
+        for obj in class_based_objs:
+            print(obj)
+
     def emptyline(self):
         '''empty line + ENTER shouldn't execute anything'''
         pass
