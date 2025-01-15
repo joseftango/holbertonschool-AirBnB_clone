@@ -192,9 +192,39 @@ class HBNBCommand(Cmd):
                     else:
                         print("** no instance found **")
             elif 'update' in sliced_argument[1]:
+                my_objs = storage.all()
                 sub_args = sliced_argument[1][7:-1]\
                     .replace('"', '').split(', ')
-                my_objs = storage.all()
+
+                to_be_dict = sliced_argument[1][7:-1].split(', ')[1:]
+                string_dict = ''
+                for i in to_be_dict:
+                    string_dict += i + ', '
+                string_dict = string_dict[:-2]
+
+                if '{' in string_dict and '}' in string_dict:
+                    casted_to_dict = None
+                    try:
+                        casted_to_dict = eval(string_dict)
+                    except Exception:
+                        return None
+                    if type(casted_to_dict) is dict:
+                        my_obj = my_objs.get(f'{sliced_argument[0]}\
+                                             .{sub_args[0]}')
+                        if my_obj:
+                            for k, v in casted_to_dict.items():
+                                my_v = v
+                                try:
+                                    my_v = eval(v)
+                                except Exception:
+                                    pass
+                                setattr(my_obj, k, my_v)
+                            storage.save()
+                        else:
+                            print('** no instance found **')
+                    else:
+                        return None
+                    return None
 
                 if len(sub_args) == 1 and sub_args[0] == '':
                     print("** instance id missing **")
@@ -208,14 +238,13 @@ class HBNBCommand(Cmd):
                         my_objs.get(f'{sliced_argument[0]}.{sub_args[0]}'):
                     print('** value missing **')
                 else:
-                    value = sub_args[2]
-                    try:
-                        value = eval(value)
-                    except Exception:
-                        pass
-                    my_objs = storage.all()
                     my_obj = my_objs.get(f'{sliced_argument[0]}.{sub_args[0]}')
                     if my_obj:
+                        value = sub_args[2]
+                        try:
+                            value = eval(value)
+                        except Exception:
+                            pass
                         setattr(my_obj, sub_args[1], value)
                         storage.save()
                     else:
@@ -244,9 +273,6 @@ class HBNBCommand(Cmd):
                 class_based_objs.append(obj)
 
         return len(class_based_objs)
-
-    def show(self, cls):
-        '''retrieve an instance based on its ID'''
 
     def emptyline(self):
         '''empty line + ENTER shouldn't execute anything'''
